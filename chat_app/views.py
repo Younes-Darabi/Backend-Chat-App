@@ -10,11 +10,12 @@ class Chat_View(View):
         ChatDB = list(Chat.objects.values())
         return JsonResponse(ChatDB, safe=False)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         try:
-            data = json.load(request.body)
+            data = json.loads(request.body)
             name = data.get('name')
             message = data.get('message')
-            Chat.objects.create(name='name', message='message')
-        except:
-            print("Error")
+            Chat.objects.create(name=name, message=message)
+            return JsonResponse({"status": "success"}, status=201)
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=400)
